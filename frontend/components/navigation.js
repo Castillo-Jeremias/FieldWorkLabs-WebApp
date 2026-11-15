@@ -1,3 +1,8 @@
+import {WorkSummary} from '../views/summary.js';
+import {WorkMaps} from '../views/work-maps.js';
+import {Predictions} from '../views/predictions.js';
+import {Reports} from '../views/reports.js';
+
 (() => {
   const sidebar = document.getElementById('sidebar');
   const toggle = document.getElementById('menu-toggle');
@@ -29,9 +34,10 @@
     if (persist && !mobile.matches) { try { localStorage.setItem('sidebar-collapsed', String(value)); } catch {} }
   }
   function navigate(focus = false) {
-    window.WorkSummary?.unmount();
-    window.WorkMaps?.unmount();
-    window.Predictions?.unmount();
+    WorkSummary.unmount();
+    Reports.unmount();
+    WorkMaps?.unmount();
+    Predictions?.unmount();
     const key = window.location.hash.slice(1) || 'resumen';
     const view = views[key];
     const isLots = !view;
@@ -46,11 +52,11 @@
       document.getElementById('view-description').textContent = view.description;
       document.getElementById('view-content').innerHTML = view.content;
       viewBreadcrumb.textContent = view.title;
-      if (key === 'reportes') window.Predictions?.mountReports(document.getElementById('view-content'));
-      if (key === 'resumen') window.WorkSummary?.mount(document.getElementById('view-content'));
-      if (key === 'predicciones') window.Predictions?.mount(document.getElementById('view-content'));
+      if (key === 'reportes') Reports.mount(document.getElementById('view-content'));
+      if (key === 'resumen') WorkSummary?.mount(document.getElementById('view-content'));
+      if (key === 'predicciones') Predictions?.mount(document.getElementById('view-content'));
       if (key === 'mapas') {
-        if (window.WorkMaps) window.WorkMaps.mount(document.getElementById('view-content'));
+        if (WorkMaps) WorkMaps.mount(document.getElementById('view-content'));
         else document.getElementById('view-content').textContent = 'No se pudo cargar el formulario. Recargá la página para reintentar.';
       }
     }

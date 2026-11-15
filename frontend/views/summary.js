@@ -1,40 +1,10 @@
-(() => {
-  const typical = {
-    yield_t_ha: ['Rendimiento', 't/ha'], area_ha: ['Superficie de medición', 'ha'],
-    moisture_pct: ['Humedad', '%'], speed_kmh: ['Velocidad', 'km/h'], elevation_m: ['Elevación', 'm']
-  };
-  const finite = value => typeof value === 'number' && Number.isFinite(value);
-  const format = value => finite(value) ? value.toLocaleString('es-AR', {maximumFractionDigits: 2}) : 'Sin dato';
-  function stats(values) {
-    if (!values.length) return null;
-    let min = Infinity, max = -Infinity, mean = 0, variance = 0;
-    values.forEach((value, i) => { min = Math.min(min, value); max = Math.max(max, value); const delta = value - mean; mean += delta / (i + 1); variance += delta * (value - mean); });
-    const bins = Array(min === max ? 1 : 6).fill(0);
-    values.forEach(value => bins[min === max ? 0 : Math.min(5, Math.floor((value - min) / (max - min) * 6))]++);
-    const sorted = [...values].sort((a, b) => a - b);
-    const quantile = fraction => { const index = (sorted.length - 1) * fraction, lower = Math.floor(index); return sorted[lower] + (sorted[Math.ceil(index)] - sorted[lower]) * (index - lower); };
-    return {min, max, mean, std: Math.sqrt(variance / values.length), median: quantile(.5), q1: quantile(.25), q3: quantile(.75), bins};
-  }
-  function variables(records) {
-    const result = Object.entries(typical).map(([key, [label, unit]]) => ({key, label, unit, read: row => row[key]}));
-    const extra = new Set();
-    for (const row of records) for (const [key, value] of Object.entries(row.raw_properties || {})) {
-      if (!(key in typical) && !['latitude', 'longitude', 'row', 'column'].includes(key) && finite(value)) extra.add(key);
-    }
-    for (const key of extra) result.push({key: `raw:${key}`, label: key, unit: 'unidad no especificada', read: row => row.raw_properties?.[key]});
-    return result.filter(variable => records.some(row => finite(variable.read(row))));
-  }
-  function mapNames(maps) {
-    const counts = new Map(), used = new Set();
-    return maps.map(map => {
-      const name = map.filename || map.field || 'Mapa sin nombre';
-      let number = (counts.get(name) || 0) + 1;
-      let label = number === 1 ? name : `${name} (${number})`;
-      while (used.has(label)) { number++; label = `${name} (${number})`; }
-      counts.set(name, number); used.add(label);
-      return label;
-    });
-  }
+import {element as el} from '../shared/dom.js';
+import {finite, formatMeasurement as format} from '../shared/format.js';
+import {stats, variables, mapNames} from '../domain/workmaps.js';
+import {workMapSelection} from '../domain/selection.js';
+import {listMaps, getMap} from '../services/workmaps.js';
+
+export const WorkSummary = (() => {
   function previewGeometry(records) {
     const geometries = records.map(row => row.geometry).filter(Boolean), points = [];
     const visit = coordinates => {
@@ -94,13 +64,10 @@
   function unmount() { controller?.abort(); }
   async function mount(container, {report = false} = {}) {
     unmount(); controller = new AbortController(); const {signal} = controller;
-    const el = (tag, text, cls) => { const node = document.createElement(tag); if (text !== undefined) node.textContent = text; if (cls) node.className = cls; return node; };
     const status = el('p', 'Cargando mapas de trabajo…'); status.setAttribute('role', 'status');
     container.replaceChildren(status);
     try {
-      const response = await fetch('/api/work-maps', {signal});
-      if (!response.ok) throw Error();
-      const {maps} = await response.json();
+      const {maps} = await listMaps({signal});
       if (signal.aborted) return;
       if (!maps.length) { status.textContent = 'Todavía no hay mapas de trabajo. Cargá un archivo para consultar sus mediciones.'; const link = el('a', 'Cargar mapa de trabajo'); link.href = '#mapas'; container.append(link); return; }
       const controls = el('div', undefined, 'dashboard-controls view-card');
@@ -109,7 +76,7 @@
       const label = el('label', 'Mapa de trabajo'), select = el('select'); label.append(select); controls.append(label, upload);
       const names = mapNames(maps);
       maps.forEach((map, index) => { const option = el('option', names[index]); option.value = map.id; select.append(option); });
-      let preferred = window.getSelectedWorkMapId?.() || new URL(window.location.href).searchParams.get('map');
+      let preferred = workMapSelection.getId?.() || new URL(window.location.href).searchParams.get('map');
       try { preferred ||= localStorage.getItem('selected-work-map'); } catch {}
       if (maps.some(map => map.id === preferred)) select.value = preferred;
       status.className = 'dashboard-status';
@@ -117,12 +84,10 @@
       let request = 0;
       async function load() {
         const current = ++request;
-        if (window.getSelectedWorkMapId?.() !== select.value) window.selectWorkMap?.(select.value);
+        if (workMapSelection.getId?.() !== select.value) workMapSelection.select?.(select.value);
         body.replaceChildren(); status.textContent = 'Cargando mediciones…';
         try {
-          const response = await fetch(`/api/work-maps/${encodeURIComponent(select.value)}`, {signal});
-          if (!response.ok) throw Error();
-          const data = await response.json();
+          const data = await getMap(select.value, {signal});
           if (signal.aborted || current !== request) return;
           status.textContent = data.demo ? 'DATOS SIMULADOS · Mediciones del mapa de ejemplo.' : 'Mediciones del archivo cargado · Fuente: ' + data.source;
           const heading = el('div', undefined, 'dashboard-heading');
@@ -178,11 +143,11 @@
       }
       select.onchange = load;
       window.addEventListener('workmapselectionchange', () => {
-        const id = window.getSelectedWorkMapId?.();
+        const id = workMapSelection.getId?.();
         if (id && id !== select.value && maps.some(map => map.id === id)) { select.value = id; load(); }
       }, {signal});
       await load();
     } catch (error) { if (!signal.aborted) { status.textContent = 'No se pudieron cargar los mapas de trabajo.'; const retry = el('button', 'Reintentar'); retry.onclick = () => mount(container, {report}); container.append(retry); } }
   }
-  window.WorkSummary = {mount, unmount, stats, variables, mapNames, previewGeometry};
+  return {mount, unmount};
 })();

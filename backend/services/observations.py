@@ -1,7 +1,7 @@
 """Consultas y cálculos del dominio, sin dependencias HTTP ni de exportación."""
 from typing import Protocol
-from .data import ObservationRepository
-from .simulation import simulate
+from ..repositories.observations import ObservationRepository
+from ..simulation import simulate
 
 
 class ObservationService(Protocol):

@@ -1,5 +1,10 @@
+import {measurements} from '../datasets/measurements.js';
+import {element} from '../shared/dom.js';
+import {listMaps, importMap} from '../services/workmaps.js';
+import {workMapSelection} from '../domain/selection.js';
+
 /* Recopilación real separada de las observaciones de demostración. */
-window.WorkMaps = (() => {
+export const WorkMaps = (() => {
   const template = `
     <div class="collection-grid">
       <form id="workmap-form" class="view-card collection-form">
@@ -15,7 +20,7 @@ window.WorkMaps = (() => {
         </div>
         <label>Archivo CSV o GeoJSON (UTF-8)<input name="file" type="file" accept=".csv,.geojson,.json" required></label>
         <p>CSV con coma, punto y coma o tabulador. Usá los nombres de variables indicados debajo. Para consultar datos del campo, ingresá un GeoJSON FeatureCollection con Polygon o MultiPolygon en WGS84 (longitud, latitud). Puede contener properties vacío: no se requieren mediciones. Los puntos CSV no definen un contorno.</p>
-        <details><summary>Variables y unidades admitidas</summary><p><code>yield_t_ha</code>: rendimiento en t/ha · <code>area_ha</code>: superficie de cada registro en ha · <code>moisture_pct</code>: humedad en % · <code>speed_kmh</code>: velocidad en km/h · <code>elevation_m</code>: elevación en m. CSV: <code>latitude</code> y <code>longitude</code> opcionales, siempre juntas.</p><p>Las celdas vacías se conservan como faltantes. Los ceros son mediciones válidas. Se guardan también las propiedades adicionales. No repitas el área total del lote en cada registro.</p></details>
+        <details><summary>Variables y unidades admitidas</summary><p>${Object.entries(measurements).map(([key, [label, unit]]) => `<code>${key}</code>: ${label} (${unit})`).join(' · ')}. CSV: <code>latitude</code> y <code>longitude</code> opcionales, siempre juntas.</p><p>Las celdas vacías se conservan como faltantes. Los ceros son mediciones válidas. Se guardan también las propiedades adicionales. No repitas el área total del lote en cada registro.</p></details>
         <div class="collection-actions"><button type="submit">Guardar mapa</button></div>
         <p id="workmap-status" role="status" aria-live="polite"></p>
       </form>
@@ -23,25 +28,11 @@ window.WorkMaps = (() => {
     </div>
     <div class="view-card collection-list"><h2>Mapas disponibles</h2><p id="workmap-list-status" role="status"></p><div id="workmap-list"></div></div>`;
   let generation = 0;
-  function element(tag, text, className) {
-    const node = document.createElement(tag);
-    if (text !== undefined) node.textContent = text;
-    if (className) node.className = className;
-    return node;
-  }
-  async function request(url, options) {
-    const response = await fetch(url, options);
-    let result;
-    try { result = await response.json(); }
-    catch { throw Error('La carga de datos no está disponible. Reiniciá el servidor y recargá la página.'); }
-    if (!response.ok) throw Error(result.error || 'No se pudo completar la operación');
-    return result;
-  }
   async function refresh(token) {
     const status = document.getElementById('workmap-list-status');
     const list = document.getElementById('workmap-list'); status.textContent = 'Cargando mapas…';
     try {
-      const {maps} = await request('/api/work-maps');
+      const {maps} = await listMaps();
       if (token !== generation || !list.isConnected) return;
       status.textContent = maps.length ? `${maps.length} mapas disponibles` : 'Todavía no hay mapas. Importá tu primer archivo.';
       list.replaceChildren();
@@ -56,7 +47,7 @@ window.WorkMaps = (() => {
     const token = ++generation;
     container.innerHTML = template;
     const form = document.getElementById('workmap-form');
-    const context = window.getWorkMapContext?.();
+    const context = workMapSelection.getContext?.();
     if (context) for (const key of ['field', 'crop', 'campaign', 'date', 'operation', 'source']) {
       form.elements[key].value = context[key] || '';
     }
@@ -74,7 +65,7 @@ window.WorkMaps = (() => {
         const payload = Object.fromEntries(new FormData(form)); delete payload.file;
         payload.filename = file.name; payload.content = new TextDecoder('utf-8', {fatal:true}).decode(await file.arrayBuffer());
         if (new TextEncoder().encode(JSON.stringify(payload)).length > 10 * 1024 * 1024) throw Error('El archivo serializado supera los 10 MiB permitidos. Dividilo en archivos menores.');
-        const data = await request('/api/work-maps', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
+        const data = await importMap(payload);
         window.dispatchEvent(new CustomEvent('workmapschange', {detail: {id: data.id}}));
         if (token !== generation || !form.isConnected) return;
         status.textContent = `Mapa guardado: ${data.summary.record_count} registros. Las celdas vacías se marcaron como faltantes.`;

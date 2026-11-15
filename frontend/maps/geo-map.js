@@ -1,7 +1,10 @@
+import {ARCGIS_CONFIG} from '../config/arcgis.js';
+import {ArcGISSource} from './arcgis.js';
+
 /* Campo real digitalizado visualmente; las variables son simuladas. */
-window.GeoMap = (() => {
+export const GeoMap = (() => {
   if (!window.L) return {ready:false};
-  const external = Boolean(window.ARCGIS_CONFIG?.layers?.length);
+  const external = Boolean(ARCGIS_CONFIG?.layers?.length);
   // La API entrega el contorno, los límites y la máscara desde un único GeoJSON.
   let bounds = L.latLngBounds([[-32.878861, -60.863129], [-32.870879, -60.857331]]);
   let coordinates = [];
@@ -90,12 +93,12 @@ window.GeoMap = (() => {
     document.getElementById('overlay-opacity').closest('label').hidden=true;
     document.getElementById('boundary').closest('label').hidden=true;
   }
-  window.ArcGISSource?.init(map, window.ARCGIS_CONFIG);
+  ArcGISSource?.init(map, ARCGIS_CONFIG);
   let resizeFrame;
   return {
     ready:true,
     getMap(){return map},
-    arcgis:window.ArcGISSource,
+    arcgis:ArcGISSource,
     setDemoField(field){
       bounds=L.latLngBounds(field.bounds);
       const polys=field.geometry.type==='MultiPolygon'?field.geometry.coordinates:[field.geometry.coordinates];
@@ -166,3 +169,6 @@ window.GeoMap = (() => {
     resize(){if(!resizeFrame)resizeFrame=requestAnimationFrame(()=>{resizeFrame=null;map.invalidateSize({pan:false})})}
   };
 })();
+
+// API pública para integrar capas desde la consola o extensiones.
+window.GeoMap = GeoMap;

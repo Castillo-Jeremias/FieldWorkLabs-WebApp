@@ -9,10 +9,11 @@ if __package__ in (None, ''):
 
 from backend.config import Settings
 from backend.server import WebServer
-from backend.data import DemoObservationRepository
+from backend.repositories.observations import DemoObservationRepository
 from backend.services import DemoObservationService
-from backend.workmaps import WorkMapRepository, WorkMapService
-from backend.example_workmaps import ExampleWorkMapRepository
+from backend.repositories.workmaps import WorkMapRepository
+from backend.services.workmaps import WorkMapService
+from backend.repositories.examples import ExampleWorkMapRepository
 
 
 def main(argv=None):
