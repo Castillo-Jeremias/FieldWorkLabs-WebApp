@@ -1,0 +1,60 @@
+{
+  "type": "Feature",
+  "properties": {
+    "name": "Lote Norte",
+    "location": "Oeste de Ibarlucea · Rosario, Santa Fe",
+    "boundary_method": "Digitalización visual aproximada del área cultivada en Esri World Imagery, excluyendo la arboleda y el casco contiguos; sin verificación catastral.",
+    "source": "Esri World Imagery",
+    "source_url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
+    "reference_image_url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=-60.87,-32.895,-60.83,-32.855&bboxSR=4326&imageSR=4326&size=2000,2000&format=jpg&f=image",
+    "digitized_on": "2026-11-14",
+    "crop_note": "Maíz es un supuesto de la simulación; cultivo real no verificado."
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          -60.8621,
+          -32.8718
+        ],
+        [
+          -60.858,
+          -32.87254
+        ],
+        [
+          -60.85928,
+          -32.87794
+        ],
+        [
+          -60.86236,
+          -32.87736
+        ],
+        [
+          -60.86202,
+          -32.87612
+        ],
+        [
+          -60.86174,
+          -32.8752
+        ],
+        [
+          -60.8614,
+          -32.8741
+        ],
+        [
+          -60.86132,
+          -32.87382
+        ],
+        [
+          -60.86246,
+          -32.8736
+        ],
+        [
+          -60.8621,
+          -32.8718
+        ]
+      ]
+    ]
+  }
+}

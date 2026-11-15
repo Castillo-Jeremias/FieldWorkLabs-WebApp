@@ -1,0 +1,270 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "oeste",
+      "properties": {
+        "name": "Campo Oeste · Ibarlucea",
+        "location": "Oeste de Ibarlucea · Rosario, Santa Fe",
+        "boundary_method": "Digitalización visual aproximada del borde cultivado sobre Esri World Imagery; se siguen caminos y cambios de cobertura visibles. Sin verificación catastral.",
+        "source": "Esri World Imagery",
+        "source_url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
+        "reference_image_url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=-60.90,-32.90,-60.83,-32.84&bboxSR=4326&imageSR=4326&size=2000,1800&format=jpg&f=image",
+        "reference_image_local": "docs/references/ibarlucea-fields-2026-11-14.jpg",
+        "reference_image_extent": {
+          "xmin": -60.9,
+          "ymin": -32.901500000000006,
+          "xmax": -60.83,
+          "ymax": -32.8385,
+          "spatialReference": {
+            "wkid": 4326,
+            "latestWkid": 4326
+          }
+        },
+        "reference_image_size": [
+          2000,
+          1800
+        ],
+        "reference_pixels": [
+          [
+            217,
+            442
+          ],
+          [
+            548,
+            212
+          ],
+          [
+            541,
+            246
+          ],
+          [
+            531,
+            284
+          ],
+          [
+            519,
+            344
+          ],
+          [
+            509,
+            410
+          ],
+          [
+            499,
+            494
+          ]
+        ],
+        "digitized_on": "2026-11-14",
+        "name_note": "Nombre interno de la simulación; no identifica al productor ni al establecimiento.",
+        "crop_note": "Cultivo, campaña, labor y mediciones son supuestos de la simulación; no verificados en terreno."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -60.892405,
+              -32.85397
+            ],
+            [
+              -60.88082,
+              -32.84592
+            ],
+            [
+              -60.881065,
+              -32.84711
+            ],
+            [
+              -60.881415,
+              -32.84844
+            ],
+            [
+              -60.881835,
+              -32.85054
+            ],
+            [
+              -60.882185,
+              -32.85285
+            ],
+            [
+              -60.882535,
+              -32.85579
+            ],
+            [
+              -60.892405,
+              -32.85397
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "sur",
+      "properties": {
+        "name": "Campo Sur · Ibarlucea",
+        "location": "Oeste de Ibarlucea · Rosario, Santa Fe",
+        "boundary_method": "Digitalización visual aproximada del borde cultivado sobre Esri World Imagery; se siguen caminos y cambios de cobertura visibles. Sin verificación catastral.",
+        "source": "Esri World Imagery",
+        "source_url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
+        "reference_image_url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=-60.90,-32.90,-60.83,-32.84&bboxSR=4326&imageSR=4326&size=2000,1800&format=jpg&f=image",
+        "reference_image_local": "docs/references/ibarlucea-fields-2026-11-14.jpg",
+        "reference_image_extent": {
+          "xmin": -60.9,
+          "ymin": -32.901500000000006,
+          "xmax": -60.83,
+          "ymax": -32.8385,
+          "spatialReference": {
+            "wkid": 4326,
+            "latestWkid": 4326
+          }
+        },
+        "reference_image_size": [
+          2000,
+          1800
+        ],
+        "reference_pixels": [
+          [
+            1419,
+            1358
+          ],
+          [
+            1607,
+            1351
+          ],
+          [
+            1609,
+            1504
+          ],
+          [
+            1587,
+            1522
+          ],
+          [
+            1441,
+            1526
+          ]
+        ],
+        "digitized_on": "2026-11-14",
+        "name_note": "Nombre interno de la simulación; no identifica al productor ni al establecimiento.",
+        "crop_note": "Cultivo, campaña, labor y mediciones son supuestos de la simulación; no verificados en terreno."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -60.850335,
+              -32.88603
+            ],
+            [
+              -60.843755,
+              -32.885785
+            ],
+            [
+              -60.843685,
+              -32.89114
+            ],
+            [
+              -60.844455,
+              -32.89177
+            ],
+            [
+              -60.849565,
+              -32.89191
+            ],
+            [
+              -60.850335,
+              -32.88603
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "este",
+      "properties": {
+        "name": "Campo Este · Ibarlucea",
+        "location": "Oeste de Ibarlucea · Rosario, Santa Fe",
+        "boundary_method": "Digitalización visual aproximada del borde cultivado sobre Esri World Imagery; se siguen caminos y cambios de cobertura visibles. Sin verificación catastral.",
+        "source": "Esri World Imagery",
+        "source_url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
+        "reference_image_url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=-60.90,-32.90,-60.83,-32.84&bboxSR=4326&imageSR=4326&size=2000,1800&format=jpg&f=image",
+        "reference_image_local": "docs/references/ibarlucea-fields-2026-11-14.jpg",
+        "reference_image_extent": {
+          "xmin": -60.9,
+          "ymin": -32.901500000000006,
+          "xmax": -60.83,
+          "ymax": -32.8385,
+          "spatialReference": {
+            "wkid": 4326,
+            "latestWkid": 4326
+          }
+        },
+        "reference_image_size": [
+          2000,
+          1800
+        ],
+        "reference_pixels": [
+          [
+            1414,
+            1184
+          ],
+          [
+            1675,
+            1049
+          ],
+          [
+            1750,
+            1043
+          ],
+          [
+            1764,
+            1227
+          ],
+          [
+            1420,
+            1242
+          ]
+        ],
+        "digitized_on": "2026-11-14",
+        "name_note": "Nombre interno de la simulación; no identifica al productor ni al establecimiento.",
+        "crop_note": "Cultivo, campaña, labor y mediciones son supuestos de la simulación; no verificados en terreno."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -60.85051,
+              -32.87994
+            ],
+            [
+              -60.841375,
+              -32.875215
+            ],
+            [
+              -60.83875,
+              -32.875005
+            ],
+            [
+              -60.83826,
+              -32.881445
+            ],
+            [
+              -60.8503,
+              -32.88197
+            ],
+            [
+              -60.85051,
+              -32.87994
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
