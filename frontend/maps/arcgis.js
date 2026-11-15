@@ -1,5 +1,5 @@
 /* Adaptador ArcGIS REST independiente de las variables de demostración. */
-window.ArcGISSource = (() => {
+export const ArcGISSource = (() => {
   const layers = new Map();
   let map, control;
   const status = () => document.getElementById('arcgis-status');

@@ -6,7 +6,7 @@ from urllib.parse import parse_qs, urlparse
 
 from .config import DEFAULT_FRONTEND_DIR, Settings
 from .services import ObservationService
-from .predictions import PredictionService, PredictionError
+from .services.predictions import PredictionService, PredictionError
 from .geometry import work_map_metadata, work_map_center_geojson
 
 

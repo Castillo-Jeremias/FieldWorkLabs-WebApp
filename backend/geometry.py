@@ -1,9 +1,15 @@
 """Geometría común para estadísticas, contorno y raster de la demostración."""
 import json
 from math import radians, sin, log, tan, pi
-from pathlib import Path
+from .datasets import DATASET_DIR
 
-FEATURE = json.loads(Path(__file__).with_name('demo_field.geojson').read_text())
+def polygonArea(ring):
+    """Superficie esférica de un anillo cerrado, en hectáreas."""
+    return abs(sum(radians(b[0]-a[0]) * (sin(radians(a[1])) + sin(radians(b[1])))
+                   for a, b in zip(ring, ring[1:]))) * 6371008.8**2 / 2 / 10000
+
+
+FEATURE = json.loads((DATASET_DIR / 'demo_field.geojson').read_text())
 RING = FEATURE['geometry']['coordinates'][0]
 WEST, EAST = min(p[0] for p in RING), max(p[0] for p in RING)
 SOUTH, NORTH = min(p[1] for p in RING), max(p[1] for p in RING)
@@ -24,8 +30,7 @@ def normalize(longitude, latitude):
 
 POLYGON = tuple(normalize(lon, lat) for lon, lat in RING[:-1])
 # Superficie esférica del contorno digitalizado, expresada en hectáreas.
-AREA_HA = round(abs(sum(radians(b[0]-a[0])*(sin(radians(a[1]))+sin(radians(b[1])))
-                        for a, b in zip(RING, RING[1:])))*6371008.8**2/2/10000, 2)
+AREA_HA = round(polygonArea(RING), 2)
 
 
 def field_metadata():
@@ -59,11 +64,8 @@ def work_map_metadata(dataset):
         return [(point[0]-bounds[0][1])/(bounds[1][1]-bounds[0][1]),
                 (mercator(bounds[1][0])-mercator(point[1])) /
                 (mercator(bounds[1][0])-mercator(bounds[0][0]))]
-    def area(ring):
-        return abs(sum(radians(b[0]-a[0])*(sin(radians(a[1]))+sin(radians(b[1])))
-                       for a, b in zip(ring, ring[1:]))) * 6371008.8**2/2/10000
     return dict(field=dataset['field'], crop=dataset['crop'], demo=True,
-                area=sum(area(poly[0])-sum(area(hole) for hole in poly[1:]) for poly in polygons),
+                area=sum(polygonArea(poly[0])-sum(polygonArea(hole) for hole in poly[1:]) for poly in polygons),
                 geometry=dict(type='MultiPolygon', coordinates=polygons), bounds=bounds,
                 normalized_polygons=[[[normalized(point) for point in ring] for ring in poly] for poly in polygons],
                 center=dict(latitude=(south+north)/2, longitude=(west+east)/2),
@@ -91,3 +93,33 @@ def work_map_center_geojson(dataset):
     south, north = min(p[1] for p in points), max(p[1] for p in points)
     return dict(type='Feature', properties={}, geometry=dict(
         type='Point', coordinates=[(west + east) / 2, (south + north) / 2]))
+
+
+def clipCell(ring, west, south, east, north):
+    """Intersección del contorno con una celda rectangular (Sutherland–Hodgman)."""
+    points = ring[:-1]
+    for axis, bound, direction in ((0, west, 1), (0, east, -1), (1, south, 1), (1, north, -1)):
+        if not points:
+            break
+        result = []
+        previous = points[-1]
+        previousInside = direction * (previous[axis] - bound) >= 0
+        for current in points:
+            currentInside = direction * (current[axis] - bound) >= 0
+            if currentInside != previousInside:
+                ratio = (bound - previous[axis]) / (current[axis] - previous[axis])
+                intersection = [previous[i] + ratio * (current[i] - previous[i]) for i in (0, 1)]
+                intersection[axis] = bound
+                result.append(intersection)
+            if currentInside:
+                result.append(list(current))
+            previous, previousInside = current, currentInside
+        points = result
+    # Evitar vértices repetidos cuando el límite cae justo en una esquina.
+    clean = []
+    for point in points:
+        if not clean or point != clean[-1]:
+            clean.append(point)
+    if len(clean) > 1 and clean[0] == clean[-1]:
+        clean.pop()
+    return clean + [clean[0][:]] if len(clean) >= 3 else []

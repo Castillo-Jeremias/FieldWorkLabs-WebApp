@@ -28,6 +28,37 @@ Las rutas relativas externas se resuelven desde el directorio de ejecución. La 
 FIELDWORK_HOST=0.0.0.0 FIELDWORK_PORT=8080 python3 -m backend.app
 ```
 
+## Estructura del backend
+
+- `backend/datasets/`: contornos GeoJSON, catálogo ambiental, fechas y parámetros de demostración.
+- `backend/repositories/`: acceso a observaciones de demostración, mapas de ejemplo y persistencia SQLite.
+- `backend/services/`: consultas ambientales, importación/exportación de mapas y cliente de predicciones.
+- `backend/domain/workmaps.py`: variables admitidas, validación, metadatos y resumen común de registros.
+- `backend/geometry.py` y `backend/simulation.py`: cálculos geográficos y generación espacial sintética.
+- `backend/server.py`, `backend/config.py` y `backend/app.py`: HTTP, configuración y composición del proceso.
+
+Los mapas importados y los ejemplos comparten el cálculo de resúmenes y la representación del catálogo. Las áreas geométricas utilizan una única función en `geometry.py`. Los archivos del usuario permanecen en `storage/`; los datos estáticos de demostración se encuentran en `datasets/`.
+
+Para verificar importación, persistencia y simulación: `python3 -m unittest discover -s tests -v`.
+
+## Estructura del frontend
+
+El navegador carga `frontend/app.js` como módulo nativo. No requiere compilación ni dependencias de desarrollo. Se sirve con el backend de Python.
+
+- `views/`: Lotes, Resumen, Mapas de trabajo, Predicciones y Reportes, con sus ciclos de montaje y limpieza.
+- `services/`: cliente HTTP JSON y acceso a observaciones, mapas y simulación.
+- `datasets/`: catálogo de mediciones, paletas y valores de referencia de los reportes.
+- `domain/`: estadísticas, nombres de mapas y estado compartido de selección y simulación.
+- `maps/`: presentación Leaflet y adaptador ArcGIS.
+- `components/`: navegación y chat.
+- `shared/`: creación de elementos y formato de números y fechas.
+- `config/arcgis.js`: configuración de servicios geográficos.
+- `styles/main.css`: estilos, reglas adaptables e impresión, conservando el orden de la cascada.
+
+Las vistas usan imports explícitos. Las consultas comparten validación de respuestas y respetan la cancelación al cambiar de vista. Las fechas ambientales se obtienen del catálogo del backend. `window.GeoMap` y `window.ARCGIS_CONFIG` conservan el acceso público para integraciones.
+
+Para ejecutar las pruebas del frontend con Node.js: `node --test tests/frontend.test.mjs`.
+
 ## Funciones
 
 - **Resumen** (vista inicial): selección de archivo, indicadores agregados, promedios y disponibilidad de mediciones, y vista esquemática de la geometría.
@@ -48,7 +79,7 @@ FIELDWORK_HOST=0.0.0.0 FIELDWORK_PORT=8080 python3 -m backend.app
 
 El mapa incorpora **Esri Leaflet 3.0.19** sobre Leaflet. Consulta directamente servicios REST publicados en ArcGIS Online o ArcGIS Enterprise, sin pasar sus datos por los endpoints de demostración de Python. No hace falta instalar paquetes.
 
-Configurar `frontend/arcgis-config.js` con las URLs REST de tus servicios (no la URL de la aplicación de ArcGIS):
+Configurar `frontend/config/arcgis.js` con las URLs REST de tus servicios (no la URL de la aplicación de ArcGIS):
 
 ```javascript
 window.ARCGIS_CONFIG = {
@@ -93,9 +124,9 @@ Los nueve archivos de ejemplo ahora usan **contornos agrícolas visibles en imá
 
 Los tres son mayores que las 19,58 ha aproximadas del Lote Norte. Se usa la superficie del contorno, calculada a partir de sus coordenadas; no se fuerzan las superficies de los antiguos ejemplos rectangulares.
 
-La fuente es [Esri World Imagery](https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer). `backend/example_fields.geojson` conserva los vértices WGS84 y, para cada parcela, el método, fecha de digitalización, enlace a la imagen consultada, extensión devuelta por el proveedor y píxeles usados para trazar el contorno. Se archivó la imagen de referencia en [docs/references/ibarlucea-fields-2026-11-14.jpg](docs/references/ibarlucea-fields-2026-11-14.jpg). La fecha 14/11/2026 corresponde al trazado y no a la adquisición de la imagen. Los cambios de cobertura visibles se usan únicamente para delimitar el campo; no permiten identificar o validar los cultivos y rendimientos simulados.
+La fuente es [Esri World Imagery](https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer). `backend/datasets/example_fields.geojson` conserva los vértices WGS84 y, para cada parcela, el método, fecha de digitalización, enlace a la imagen consultada, extensión devuelta por el proveedor y píxeles usados para trazar el contorno. Se archivó la imagen de referencia en [docs/references/ibarlucea-fields-2026-11-14.jpg](docs/references/ibarlucea-fields-2026-11-14.jpg). La fecha 14/11/2026 corresponde al trazado y no a la adquisición de la imagen. Los cambios de cobertura visibles se usan únicamente para delimitar el campo; no permiten identificar o validar los cultivos y rendimientos simulados.
 
-`backend/example_workmaps.py` recorta una grilla contra cada contorno y calcula el área de las celdas resultantes. Se generan 71, 118 y 94 polígonos por fecha para Oeste, Sur y Este respectivamente; la simulación queda dentro del límite trazado. Se mantiene la geometría entre fechas y cambian las variables. Los colores de rendimiento usan una escala fija de 0 a 12 t/ha. Cada fecha es una simulación independiente: no sumar las hectáreas entre fechas ni interpretar esta secuencia como una estimación agronómica.
+`backend/repositories/examples.py` recorta una grilla contra cada contorno y calcula el área de las celdas resultantes. Se generan 71, 118 y 94 polígonos por fecha para Oeste, Sur y Este respectivamente; la simulación queda dentro del límite trazado. Se mantiene la geometría entre fechas y cambian las variables. Los colores de rendimiento usan una escala fija de 0 a 12 t/ha. Cada fecha es una simulación independiente: no sumar las hectáreas entre fechas ni interpretar esta secuencia como una estimación agronómica.
 
 Los ejemplos se identifican con `demo: true`, `geometry_origin: digitized_imagery` y `boundary_provenance`. Se generan en memoria, sin insertarse en SQLite ni reemplazar las cargas del usuario. Sus mediciones se pueden consultar en Resumen; Lotes utiliza sus contornos para generar las capas ambientales simuladas.
 
