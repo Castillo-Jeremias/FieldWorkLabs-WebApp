@@ -1,0 +1,73 @@
+{
+  "proyecto": "HYDRA | Agua y adaptación agrícola (Field Shift + Gestión hídrica inteligente)",
+  "fuentes_nasa": [
+    {
+      "mision": "NASA GPM IMERG / POWER",
+      "variable": "Precipitación diaria (PRECTOTCORR)",
+      "unidad": "mm/día",
+      "resolucion_espacial": "10 km (0.1°)",
+      "resolucion_temporal": "Diaria",
+      "uso_hydra": "Forzante de recarga en Pastas (M1), balance de agua en AquaCrop (M2) y lluvia acumulada 15d en XGBoost (M3)"
+    },
+    {
+      "mision": "NASA SMAP L4 (SPL4SMGP)",
+      "variable": "Rootzone & Surface Soil Moisture",
+      "unidad": "m³/m³",
+      "resolucion_espacial": "9 km",
+      "resolucion_temporal": "Diaria (3-h promedio)",
+      "uso_hydra": "Predictor en XGBoost Anegamiento (M3) y contraste de humedad simulada por AquaCrop (th1..th3)"
+    },
+    {
+      "mision": "NASA MODIS MOD16 / ECOSTRESS",
+      "variable": "Evapotranspiración Potencial (ET0) y Evaporative Stress Index (ESI)",
+      "unidad": "mm/día y adimensional [0-1]",
+      "resolucion_espacial": "500 m (MOD16) / 70 m (ECOSTRESS)",
+      "resolucion_temporal": "Diaria / 8 días",
+      "uso_hydra": "Demanda atmosférica en Pastas (M1) y AquaCrop (M2); validación de estrés hídrico de cultivo"
+    },
+    {
+      "mision": "NASA HLS (Harmonized Landsat Sentinel) / MODIS MOD13",
+      "variable": "NDVI / EVI",
+      "unidad": "Índice [-1 a 1]",
+      "resolucion_espacial": "30 m (HLS) / 250 m (MOD13)",
+      "resolucion_temporal": "5 a 16 días",
+      "uso_hydra": "Contraste y trazabilidad del desarrollo de cobertura de canopeo (CC%) en AquaCrop"
+    },
+    {
+      "mision": "NASA SRTM Digital Elevation Model",
+      "variable": "Elevación (m), Pendiente (%) e Índice Topográfico de Humedad (TWI)",
+      "unidad": "m s.n.m. / % / adimensional",
+      "resolucion_espacial": "30 m",
+      "resolucion_temporal": "Estático",
+      "uso_hydra": "Micro-relieve 2D del lote (grilla 20x20) para susceptibilidad a anegamiento y profundidad local de napa"
+    },
+    {
+      "mision": "NASA GRACE / GRACE-FO",
+      "variable": "Terrestrial Water Storage Anomaly (TWS)",
+      "unidad": "cm eq. de agua",
+      "resolucion_espacial": "Regional (~100 km)",
+      "resolucion_temporal": "Mensual",
+      "uso_hydra": "Contexto hidrológico regional de reservas subterráneas (complementado a escala de lote por Pastas/Freatímetro)"
+    }
+  ],
+  "fuentes_complementarias": [
+    {
+      "fuente": "INTA / SoilGrids (ISRIC)",
+      "variable": "Textura (% arcilla, limo, arena), MO y constantes hídricas (WP, FC, SAT, Ksat)",
+      "escala": "Carta de Suelos 1:50.000 (Serie Casilda) / Global 250m",
+      "uso_hydra": "Parametrización de las 4 capas del suelo en AquaCrop y feature clay_pct en XGBoost"
+    },
+    {
+      "fuente": "ESA Copernicus Sentinel-1 SAR / Sentinel-2 NDWI",
+      "variable": "Máscara histórica de agua en superficie / anegamiento",
+      "escala": "10 m - 20 m",
+      "uso_hydra": "Variable objetivo (target) de entrenamiento para XGBoost Anegamiento 2D (Modelo 3)"
+    },
+    {
+      "fuente": "Red de Freatímetros INTA / SIAS Santa Fe / INA",
+      "variable": "Profundidad de napa freática observada (m bajo nivel del suelo)",
+      "escala": "Puntual en lote / Cuenca Carcarañá",
+      "uso_hydra": "Calibración y evaluación temporal 80/20 del modelo Pastas (Modelo 1)"
+    }
+  ]
+}
