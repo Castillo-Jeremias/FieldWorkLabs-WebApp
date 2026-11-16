@@ -12,6 +12,12 @@ python3 backend/app.py
 
 Open http://127.0.0.1:8000. For a different port: `python3 backend/app.py --port 8080`.
 
+## Included FieldWork Labs models
+
+The [`models/`](models/) directory contains the essential components of `FieldworkLabs-Models`: water table (Pastas), crop and rotation (AquaCrop), waterlogging (XGBoost), and risk (surrogate and Monte Carlo) models, together with their API, base datasets, water risk tests, and API contract. It preserves the Pastas water table series used as input by AquaCrop. Download caches, the test dashboard, integration examples, simulation results, and duplicate documentation are excluded.
+
+The models are included as code and reference material; they do not start with the webapp or connect automatically to its backend. The webapp keeps its current execution behavior. Model dependencies are declared separately in [`models/requirements.txt`](models/requirements.txt) and are not required to start the webapp. See the [model guide](models/README.md) and [theoretical document](docs/FieldworkLabs_NASA_AI_Theoretical_Summary.pdf).
+
 ## Configuration and modules
 
 | Variable | Default | CLI argument |
@@ -132,7 +138,7 @@ Examples are identified by `demo: true`, `geometry_origin: digitized_imagery`, a
 
 ## Predictions and reports
 
-In **Predictions**, enter WGS84 longitude and latitude and choose the `habitual` or `neutro` scenario. Clicking **Simulate** (Simular) makes the backend send a JSON POST with `lat`, `lon`, and `escenario_clima` to `FIELDWORK_PREDICTION_URL`. The external service must run separately; it is not included in this repository. The timeout is 60 seconds.
+In **Predictions**, enter WGS84 longitude and latitude and choose the `habitual` or `neutro` scenario. Clicking **Simulate** (Simular) makes the backend send a JSON POST with `lat`, `lon`, and `escenario_clima` to `FIELDWORK_PREDICTION_URL`. The FieldWork Labs service code is included in `models/`, but its execution and integration must be configured separately. The timeout is 60 seconds.
 
 The internal endpoint `POST /api/predictions` validates coordinates and the scenario, and returns `{ "result": ... }`. External API errors or invalid JSON produce 502; connection problems or timeouts produce 504. Errors appear in the form so the user can retry.
 

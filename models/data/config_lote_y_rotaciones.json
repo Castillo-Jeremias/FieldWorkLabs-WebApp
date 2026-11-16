@@ -1,0 +1,178 @@
+{
+  "lote_piloto": {
+    "nombre": "Establecimiento Piloto Casilda - Cuenca Carcarañá",
+    "localidad": "Casilda, Santa Fe, Argentina",
+    "lat": -33.04,
+    "lon": -61.16,
+    "superficie_ha": 100.0,
+    "elevacion_media_srtm_m": 77.8,
+    "acuifero_referencia": "Acuífero Pampeano Libre (Freatímetro INTA/SIAS)",
+    "escenarios_fallback_napa_m": {
+      "alta_riesgo_anegamiento": 1.2,
+      "optima_aporte_capilar": 2.1,
+      "profunda_sin_aporte": 3.5
+    }
+  },
+  "perfil_suelo_argiudol_4_capas": {
+    "serie_suelo": "Serie Casilda - Argiudol Típico (INTA / SoilGrids)",
+    "profundidad_total_m": 2.0,
+    "capas": [
+      {
+        "id": "th1",
+        "horizonte": "Ap / A1 (Superficial)",
+        "profundidad_m": [
+          0.0,
+          0.2
+        ],
+        "espesor_m": 0.2,
+        "clay_pct": 26.5,
+        "sand_pct": 14.0,
+        "om_pct": 3.4,
+        "th_wp": 0.145,
+        "th_fc": 0.325,
+        "th_sat": 0.465,
+        "ksat_mm_day": 320.0
+      },
+      {
+        "id": "th2",
+        "horizonte": "Bt1 (Argílico superior)",
+        "profundidad_m": [
+          0.2,
+          0.5
+        ],
+        "espesor_m": 0.3,
+        "clay_pct": 36.0,
+        "sand_pct": 11.5,
+        "om_pct": 1.8,
+        "th_wp": 0.185,
+        "th_fc": 0.355,
+        "th_sat": 0.455,
+        "ksat_mm_day": 110.0
+      },
+      {
+        "id": "th3",
+        "horizonte": "Bt2 / BC (Argílico inferior)",
+        "profundidad_m": [
+          0.5,
+          1.0
+        ],
+        "espesor_m": 0.5,
+        "clay_pct": 31.0,
+        "sand_pct": 15.0,
+        "om_pct": 0.9,
+        "th_wp": 0.175,
+        "th_fc": 0.335,
+        "th_sat": 0.44,
+        "ksat_mm_day": 165.0
+      },
+      {
+        "id": "th4",
+        "horizonte": "C (Loess Pampeano - Zona Freática)",
+        "profundidad_m": [
+          1.0,
+          2.0
+        ],
+        "espesor_m": 1.0,
+        "clay_pct": 22.0,
+        "sand_pct": 21.0,
+        "om_pct": 0.4,
+        "th_wp": 0.15,
+        "th_fc": 0.305,
+        "th_sat": 0.425,
+        "ksat_mm_day": 280.0
+      }
+    ]
+  },
+  "rotaciones_candidatas": {
+    "rot_1_actual": {
+      "id": "rot_1_actual",
+      "nombre": "Rotación 1 (Actual): Monocultivo Soja 1ra",
+      "objetivo_agronomico": "Testigo histórico de baja cobertura invernal y alto excedente hídrico otoñal.",
+      "cobertura_rastrojo_pct": 52.0,
+      "diversidad_indice": 0.33,
+      "secuencia_cultivos": [
+        {
+          "etapa": 1,
+          "cultivo": "Soja 1ra (Campaña 1)",
+          "crop_fao": "Soybean",
+          "fecha_siembra": "11-10",
+          "fecha_cosecha": "04-05",
+          "profundidad_radicular_max_m": 1.3,
+          "barbecho_posterior_dias": 218
+        },
+        {
+          "etapa": 2,
+          "cultivo": "Soja 1ra (Campaña 2)",
+          "crop_fao": "Soybean",
+          "fecha_siembra": "11-10",
+          "fecha_cosecha": "04-05",
+          "profundidad_radicular_max_m": 1.3,
+          "barbecho_posterior_dias": 180
+        }
+      ]
+    },
+    "rot_2_intensiva": {
+      "id": "rot_2_intensiva",
+      "nombre": "Rotación 2 (Intensiva): Trigo / Soja 2da -> Maíz Temprano",
+      "objetivo_agronomico": "Maximizar consumo de agua primaveral (bomba biológica de napa) y fijar carbono con gramíneas.",
+      "cobertura_rastrojo_pct": 88.0,
+      "diversidad_indice": 0.92,
+      "secuencia_cultivos": [
+        {
+          "etapa": 1,
+          "cultivo": "Trigo Invernal",
+          "crop_fao": "Wheat",
+          "fecha_siembra": "06-10",
+          "fecha_cosecha": "11-25",
+          "profundidad_radicular_max_m": 1.4,
+          "barbecho_posterior_dias": 5
+        },
+        {
+          "etapa": 2,
+          "cultivo": "Soja 2da",
+          "crop_fao": "Soybean",
+          "fecha_siembra": "12-01",
+          "fecha_cosecha": "04-25",
+          "profundidad_radicular_max_m": 1.15,
+          "barbecho_posterior_dias": 143
+        },
+        {
+          "etapa": 3,
+          "cultivo": "Maíz Temprano",
+          "crop_fao": "Maize",
+          "fecha_siembra": "09-15",
+          "fecha_cosecha": "03-10",
+          "profundidad_radicular_max_m": 1.75,
+          "barbecho_posterior_dias": 90
+        }
+      ]
+    },
+    "rot_3_adaptativa": {
+      "id": "rot_3_adaptativa",
+      "nombre": "Rotación 3 (Adaptativa): Maíz Tardío -> Soja 1ra",
+      "objetivo_agronomico": "Estabilizar pisos de rendimiento ubicando floración de maíz fuera del bache térmico/hídrico de enero.",
+      "cobertura_rastrojo_pct": 82.0,
+      "diversidad_indice": 0.78,
+      "secuencia_cultivos": [
+        {
+          "etapa": 1,
+          "cultivo": "Maíz Tardío (Diciembre)",
+          "crop_fao": "Maize",
+          "fecha_siembra": "12-12",
+          "fecha_cosecha": "06-05",
+          "profundidad_radicular_max_m": 1.65,
+          "barbecho_posterior_dias": 155
+        },
+        {
+          "etapa": 2,
+          "cultivo": "Soja 1ra",
+          "crop_fao": "Soybean",
+          "fecha_siembra": "11-08",
+          "fecha_cosecha": "04-02",
+          "profundidad_radicular_max_m": 1.3,
+          "barbecho_posterior_dias": 150
+        }
+      ]
+    }
+  }
+}
