@@ -143,3 +143,6 @@ Reports displays three reference rotations, yields by stage, crop residue cover,
 **Export to PDF** (Exportar a PDF) opens the browser's print dialog: choose “Save as PDF.” No PDF is generated on the server.
 
 The floating chat lets you open the panel and add local messages. It has no automatic replies, assistant connection, or message persistence.
+
+## Documentation for AI Models
+https://github.com/Castillo-Jeremias/FieldWorkLabs-WebApp/blob/main/docs/FieldworkLabs_NASA_AI_Theoretical_Summary.pdf
